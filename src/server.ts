@@ -1,10 +1,19 @@
-import { TransactionService } from "@buf/darvand_fintrackapis.community_timostamm-protobuf-ts/transaction/v1/api_pb";
+import * as dotenv from "dotenv";
+dotenv.config();
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import transactionsController from "./infraestructure/controllers/transactions.controller";
+import { TransactionsController } from "./infraestructure/controllers/transactions.controller";
+import { TransactionServiceService } from "./infraestructure/models/proto/transaction/v1/api_grpc_pb";
+import { CONFIG, EnvVarsConfig } from "./config/env-vars.config";
+import { DynamodbRepository } from "./infraestructure/repositories/dynamodb.repository";
+import { TransactionsService } from "./application/transactions.service";
 
 const main = () => {
   const server = new Server();
-  server.addService(TransactionService, transactionsController);
+  const config = new EnvVarsConfig(CONFIG);
+  const repo = new DynamodbRepository(config);
+  const service = new TransactionsService(repo);
+  const controller = new TransactionsController(service);
+  server.addService(TransactionServiceService, controller.getImplementation());
   server.bindAsync("0.0.0.0:50051", ServerCredentials.createInsecure(), () => {
     console.log("server start");
     server.start();

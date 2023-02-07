@@ -1,23 +1,23 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { IConfig, EnvVarsConfig } from "../../config/env-vars.config";
 import { TransactionDetailEntity } from "../../domain/transactions.entity";
 
 import { TransactionRepository } from "../../domain/transactions.repository";
 import { TransactionValue } from "../../domain/transactions.value";
-import { TransactionMapper } from "../mappers/transactions.mapper";
+import { TransactionDDBMapper } from "../mappers/dynamodb/transactions.ddb.mapper";
 
 export class DynamodbRepository implements TransactionRepository {
   private readonly ddbDocumentClient: DynamoDBDocumentClient;
   private readonly TABLE_NAME = "transactions";
 
-  constructor() {
-    const REGION = "sa-east-1";
+  constructor(private readonly config: EnvVarsConfig) {
     const ddbClient = new DynamoDBClient({
-      region: REGION,
-      endpoint: "http://localhost:4566",
+      region: this.config.get("aws")["region"],
+      endpoint: this.config.get("aws")["endpoint"],
       credentials: {
-        accessKeyId: "default_access_key",
-        secretAccessKey: "default_secret_key",
+        accessKeyId: this.config.get("aws")["credentials"]["accessKeyId"],
+        secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"],
       },
     });
     this.ddbDocumentClient = DynamoDBDocumentClient.from(ddbClient);
@@ -31,7 +31,6 @@ export class DynamodbRepository implements TransactionRepository {
           ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}`, ":sk": `TRANSACTION#${transactionId}` },
         })
       );
-      console.log("transactions", transactionsResult.Items);
       const productsResult = await this.ddbDocumentClient.send(
         new QueryCommand({
           TableName: this.TABLE_NAME,
@@ -40,8 +39,7 @@ export class DynamodbRepository implements TransactionRepository {
           ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${accountId}#TRANSACTION#${transactionId}` },
         })
       );
-      console.log("products", productsResult);
-      return TransactionMapper.fromDDBToTransactionValue(transactionsResult.Items!, productsResult.Items!);
+      return TransactionDDBMapper.fromDDBToTransactionValue(transactionsResult.Items!, productsResult.Items!);
     } catch (error: any) {
       console.error("On getByAccountIdAndTransactionId", error.message);
       throw error;
@@ -60,8 +58,7 @@ export class DynamodbRepository implements TransactionRepository {
           ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}` },
         })
       );
-      console.log("Query result", result.Items);
-      return TransactionMapper.fromDDBAccountToTransactionValue(result.Items!);
+      return TransactionDDBMapper.fromDDBAccountToTransactionValue(result.Items!);
     } catch (error: any) {
       console.error("On getByAccountId", error.message);
       throw error;
