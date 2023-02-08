@@ -1,6 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { IConfig, EnvVarsConfig } from "../../config/env-vars.config";
+import { EnvVarsConfig } from "../../config/env-vars.config";
+import { Logger } from "../../config/logger.config";
 import { TransactionDetailEntity } from "../../domain/transactions.entity";
 
 import { TransactionRepository } from "../../domain/transactions.repository";
@@ -10,6 +11,7 @@ import { TransactionDDBMapper } from "../mappers/dynamodb/transactions.ddb.mappe
 export class DynamodbRepository implements TransactionRepository {
   private readonly ddbDocumentClient: DynamoDBDocumentClient;
   private readonly TABLE_NAME = "transactions";
+  private readonly logger = new Logger(DynamodbRepository.name).logger;
 
   constructor(private readonly config: EnvVarsConfig) {
     const ddbClient = new DynamoDBClient({
@@ -24,24 +26,24 @@ export class DynamodbRepository implements TransactionRepository {
   }
   async getByAccountIdAndTransactionId(accountId: string, transactionId: string): Promise<TransactionValue> {
     try {
-      const transactionsResult = await this.ddbDocumentClient.send(
-        new QueryCommand({
-          TableName: this.TABLE_NAME,
-          KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
-          ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}`, ":sk": `TRANSACTION#${transactionId}` },
-        })
-      );
-      const productsResult = await this.ddbDocumentClient.send(
-        new QueryCommand({
-          TableName: this.TABLE_NAME,
-          IndexName: "GSI1",
-          KeyConditionExpression: "GS1PK = :gs1pk",
-          ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${accountId}#TRANSACTION#${transactionId}` },
-        })
-      );
+      const query = {
+        TableName: this.TABLE_NAME,
+        KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
+        ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}`, ":sk": `TRANSACTION#${transactionId}` },
+      };
+      this.logger.debug({ query }, "Searching transaction");
+      const transactionsResult = await this.ddbDocumentClient.send(new QueryCommand(query));
+      const queryProducts = {
+        TableName: this.TABLE_NAME,
+        IndexName: "GSI1",
+        KeyConditionExpression: "GS1PK = :gs1pk",
+        ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${accountId}#TRANSACTION#${transactionId}` },
+      };
+      this.logger.debug({ queryProducts }, "Searching products for transaction");
+      const productsResult = await this.ddbDocumentClient.send(new QueryCommand(queryProducts));
       return TransactionDDBMapper.fromDDBToTransactionValue(transactionsResult.Items!, productsResult.Items!);
     } catch (error: any) {
-      console.error("On getByAccountIdAndTransactionId", error.message);
+      this.logger.error({ error }, "On getByAccountIdAndTransactionId");
       throw error;
     }
   }
@@ -51,16 +53,16 @@ export class DynamodbRepository implements TransactionRepository {
 
   async getByAccountId(accountId: string): Promise<TransactionValue[]> {
     try {
-      const result = await this.ddbDocumentClient.send(
-        new QueryCommand({
-          TableName: "transactions",
-          KeyConditionExpression: "PK = :pk",
-          ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}` },
-        })
-      );
+      const query = {
+        TableName: "transactions",
+        KeyConditionExpression: "PK = :pk",
+        ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}` },
+      };
+      this.logger.debug({ query }, "Searching transactions for account");
+      const result = await this.ddbDocumentClient.send(new QueryCommand(query));
       return TransactionDDBMapper.fromDDBAccountToTransactionValue(result.Items!);
     } catch (error: any) {
-      console.error("On getByAccountId", error.message);
+      this.logger.error({ error }, "On getByAccountId");
       throw error;
     }
   }

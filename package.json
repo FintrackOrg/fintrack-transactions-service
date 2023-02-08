@@ -5,6 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "start": "nodemon --watch './**/*.ts' --exec 'ts-node' src/server.ts",
+    "start:dev": "PINO_LOG_LEVEL=debug nodemon --watch './**/*.ts' --exec 'ts-node' src/server.ts",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",
     "compile": "tsc",
@@ -33,6 +34,8 @@
     "minimist": "^1.2.6",
     "nodemon": "^2.0.19",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "pino": "^8.9.0",
+    "pino-pretty": "^9.1.1"
   }
 }
