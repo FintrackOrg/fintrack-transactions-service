@@ -1,5 +1,6 @@
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import { TransactionsService } from "../../application/transactions.service";
+import { Logger } from "../../config/logger.config";
 import { TransactionProtoMapper } from "../mappers/proto/transactions.proto.mapper";
 import {
   GetTransactionsByAccountRequest,
@@ -7,15 +8,19 @@ import {
 } from "../models/proto/transaction/v1/api_pb";
 
 export class TransactionsController {
+  private readonly logger = new Logger(TransactionsController.name).logger;
+
   constructor(private readonly transactionsService: TransactionsService) {}
 
   getImplementation() {
     const service = this.transactionsService;
+    const logger = this.logger;
     return {
       async getTransactionsByAccount(
         call: ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
         callback: sendUnaryData<GetTransactionsByAccountResponse>
       ) {
+        logger.debug(call.request.toObject(), `Starting getTransactionsByAccount endpoint`);
         if (!call.request.getAccountId()) {
           return callback(new Error("left account id"));
         }
