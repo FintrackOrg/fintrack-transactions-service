@@ -1,0 +1,17 @@
+version: "3"
+services:
+  transaction:
+    build:
+      context: .
+    environment:
+      - AWS_REGION="sa-east-1"
+      - AWS_ENDPOINT="http://localstack:4566"
+      - AWS_CREDENTIALS_ACCESS_KEY_ID="default_access_key"
+      - AWS_CREDENTIALS_SECRET_ACCESS_KEY="default_secret_key"
+    ports:
+      - "50051:50051"
+    networks:
+      - local-setup_localstack-net
+networks:
+  local-setup_localstack-net:
+    external: true
