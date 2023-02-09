@@ -1,6 +1,6 @@
-import { Categories, PaymentMethods } from "../../../domain/transactions.entity";
-import { TransactionValue } from "../../../domain/transactions.value";
-import { ProductModelDDB, TransactionModelDDB } from "../../models/dynamodb/transactions.model";
+import { Categories, PaymentMethods } from "@domain/transactions.entity";
+import { TransactionValue } from "@domain/transactions.value";
+import { ProductModelDDB, TransactionModelDDB } from "@infra/models/dynamodb/transactions.model";
 
 export class TransactionDDBMapper {
   static fromDDBToTransactionValue(

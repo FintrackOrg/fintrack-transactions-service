@@ -1,11 +1,11 @@
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
-import { TransactionsService } from "../../application/transactions.service";
-import { Logger } from "../../config/logger.config";
-import { TransactionProtoMapper } from "../mappers/proto/transactions.proto.mapper";
+import { TransactionsService } from "@app/transactions.service";
+import { Logger } from "@config/logger.config";
+import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.mapper";
 import {
   GetTransactionsByAccountRequest,
   GetTransactionsByAccountResponse,
-} from "../models/proto/transaction/v1/api_pb";
+} from "@infra/models/proto/transaction/v1/api_pb";
 
 export class TransactionsController {
   private readonly logger = new Logger(TransactionsController.name).logger;

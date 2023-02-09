@@ -1,6 +1,6 @@
-import { Logger } from "../config/logger.config";
-import { TransactionRepository } from "../domain/transactions.repository";
-import { TransactionValue } from "../domain/transactions.value";
+import { Logger } from "@config/logger.config";
+import { TransactionRepository } from "@domain/transactions.repository";
+import { TransactionValue } from "@domain/transactions.value";
 
 interface ITransactionsService {
   getAccountTransactions(userId: string): Promise<TransactionValue[]>;

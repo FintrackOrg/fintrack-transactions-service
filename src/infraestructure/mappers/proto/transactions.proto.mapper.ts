@@ -1,12 +1,12 @@
-import { Categories, PaymentMethods, TransactionDetailEntity } from "../../../domain/transactions.entity";
-import { TransactionValue } from "../../../domain/transactions.value";
-import { GetTransactionsByAccountResponse } from "../../models/proto/transaction/v1/api_pb";
+import { Categories, PaymentMethods, TransactionDetailEntity } from "@domain/transactions.entity";
+import { TransactionValue } from "@domain/transactions.value";
+import { GetTransactionsByAccountResponse } from "@infra/models/proto/transaction/v1/api_pb";
 import {
   Category,
   PaymentMethod,
   Transaction,
   TransactionDetail,
-} from "../../models/proto/transaction/v1/transaction_pb";
+} from "@infra/models/proto/transaction/v1/transaction_pb";
 
 const paymentMethodToProto = {
   [PaymentMethods.CASH]: PaymentMethod.PAYMENT_METHOD_CASH,
