@@ -1,12 +1,12 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { EnvVarsConfig } from "../../config/env-vars.config";
-import { Logger } from "../../config/logger.config";
-import { TransactionDetailEntity } from "../../domain/transactions.entity";
+import { EnvVarsConfig } from "@config/env-vars.config";
+import { Logger } from "@config/logger.config";
+import { TransactionDetailEntity } from "@domain/transactions.entity";
 
-import { TransactionRepository } from "../../domain/transactions.repository";
-import { TransactionValue } from "../../domain/transactions.value";
-import { TransactionDDBMapper } from "../mappers/dynamodb/transactions.ddb.mapper";
+import { TransactionRepository } from "@domain/transactions.repository";
+import { TransactionValue } from "@domain/transactions.value";
+import { TransactionDDBMapper } from "@infra/mappers/dynamodb/transactions.ddb.mapper";
 
 export class DynamodbRepository implements TransactionRepository {
   private readonly ddbDocumentClient: DynamoDBDocumentClient;
