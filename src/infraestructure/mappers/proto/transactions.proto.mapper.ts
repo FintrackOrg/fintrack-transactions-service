@@ -1,5 +1,5 @@
-import { Categories, PaymentMethods, TransactionDetailEntity } from "@domain/transactions.entity";
-import { TransactionValue } from "@domain/transactions.value";
+import { Categories, PaymentMethods, TransactionDetailEntity } from "@domain/models/transactions.entity";
+import { TransactionValue } from "@domain/models/transactions.value";
 import { GetTransactionsByAccountResponse } from "@infra/models/proto/transaction/v1/api_pb";
 import {
   Category,

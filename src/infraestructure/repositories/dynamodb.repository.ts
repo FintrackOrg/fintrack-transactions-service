@@ -2,10 +2,10 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { EnvVarsConfig } from "@config/env-vars.config";
 import { Logger } from "@config/logger.config";
-import { TransactionDetailEntity } from "@domain/transactions.entity";
+import { TransactionDetailEntity } from "@domain/models/transactions.entity";
 
-import { TransactionRepository } from "@domain/transactions.repository";
-import { TransactionValue } from "@domain/transactions.value";
+import { TransactionRepository } from "@domain/types/transactions.repository";
+import { TransactionValue } from "@domain/models/transactions.value";
 import { TransactionDDBMapper } from "@infra/mappers/dynamodb/transactions.ddb.mapper";
 
 export class DynamodbRepository implements TransactionRepository {
@@ -13,6 +13,7 @@ export class DynamodbRepository implements TransactionRepository {
   private readonly TABLE_NAME = "transactions";
   private readonly logger = new Logger(DynamodbRepository.name).logger;
 
+  //TODO: Set mapper as a dependency
   constructor(private readonly config: EnvVarsConfig) {
     const ddbClient = new DynamoDBClient({
       region: this.config.get("aws")["region"],
@@ -46,9 +47,6 @@ export class DynamodbRepository implements TransactionRepository {
       this.logger.error({ error }, "On getByAccountIdAndTransactionId");
       throw error;
     }
-  }
-  getTransactionsDetails(transactionId: string): Promise<TransactionDetailEntity[]> {
-    return Promise.resolve([]);
   }
 
   async getByAccountId(accountId: string): Promise<TransactionValue[]> {

@@ -1,16 +1,16 @@
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
-import { TransactionsService } from "@app/transactions.service";
 import { Logger } from "@config/logger.config";
 import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.mapper";
 import {
   GetTransactionsByAccountRequest,
   GetTransactionsByAccountResponse,
 } from "@infra/models/proto/transaction/v1/api_pb";
+import { ITransactionsService } from "@app/types/transactions.service.type";
 
 export class TransactionsController {
   private readonly logger = new Logger(TransactionsController.name).logger;
 
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(private readonly transactionsService: ITransactionsService) {}
 
   getImplementation() {
     const service = this.transactionsService;

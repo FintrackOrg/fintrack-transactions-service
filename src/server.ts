@@ -5,7 +5,7 @@ import { TransactionsController } from "./infraestructure/controllers/transactio
 import { TransactionServiceService } from "./infraestructure/models/proto/transaction/v1/api_grpc_pb";
 import { CONFIG, EnvVarsConfig } from "./config/env-vars.config";
 import { DynamodbRepository } from "./infraestructure/repositories/dynamodb.repository";
-import { TransactionsService } from "./application/transactions.service";
+import { TransactionsService } from "./application/services/transactions.service";
 import { Logger } from "./config/logger.config";
 
 const main = () => {

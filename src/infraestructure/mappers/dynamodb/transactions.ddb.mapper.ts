@@ -1,5 +1,5 @@
-import { Categories, PaymentMethods } from "@domain/transactions.entity";
-import { TransactionValue } from "@domain/transactions.value";
+import { Categories, PaymentMethods } from "@domain/models/transactions.entity";
+import { TransactionValue } from "@domain/models/transactions.value";
 import { ProductModelDDB, TransactionModelDDB } from "@infra/models/dynamodb/transactions.model";
 
 export class TransactionDDBMapper {
