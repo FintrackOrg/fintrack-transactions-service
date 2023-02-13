@@ -1,4 +1,4 @@
-type IConfig = {
+export type IConfig = {
   aws: {
     region: string;
     endpoint: string;

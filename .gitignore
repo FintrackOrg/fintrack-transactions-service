@@ -3,3 +3,4 @@ node_modules/
 src/infraestructure/models/proto/
 .npm
 dist
+coverage/

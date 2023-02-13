@@ -1,11 +1,7 @@
 import { Logger } from "@config/logger.config";
-import { TransactionRepository } from "@domain/transactions.repository";
-import { TransactionValue } from "@domain/transactions.value";
-
-interface ITransactionsService {
-  getAccountTransactions(userId: string): Promise<TransactionValue[]>;
-  getTransactionDetails(accountId: string, transactionId: string): Promise<TransactionValue>;
-}
+import { TransactionRepository } from "@domain/types/transactions.repository";
+import { TransactionValue } from "@domain/models/transactions.value";
+import { ITransactionsService } from "@app/types/transactions.service.type";
 
 export class TransactionsService implements ITransactionsService {
   private readonly logger = new Logger(TransactionsService.name).logger;
