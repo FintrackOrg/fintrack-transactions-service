@@ -8,22 +8,31 @@ import { DynamodbRepository } from "./infraestructure/repositories/dynamodb.repo
 import { TransactionsService } from "./application/services/transactions.service";
 import { Logger } from "./config/logger.config";
 
-const main = () => {
-  const logger = new Logger("server").logger;
-  const server = new Server();
+let server: Server;
+const logger = new Logger("server").logger;
+
+export const start = () => {
+  server = new Server();
   const config = new EnvVarsConfig(CONFIG);
   const repo = new DynamodbRepository(config);
   const service = new TransactionsService(repo);
   const controller = new TransactionsController(service);
   server.addService(TransactionServiceService, controller.getImplementation());
-  server.bindAsync("0.0.0.0:50051", ServerCredentials.createInsecure(), (error, port) => {
-    if (error) {
-      logger.error(error.message);
-      throw error;
-    }
-    logger.info(`Server start on port ${port}`);
-    server.start();
+  return new Promise<void>((resolve, reject) => {
+    server.bindAsync("0.0.0.0:50051", ServerCredentials.createInsecure(), (error, port) => {
+      if (error) {
+        logger.error(error.message);
+        reject(error);
+      }
+      server.start();
+      logger.info(`Server start on port ${port}`);
+      resolve();
+    });
   });
 };
 
-main();
+export const shutdown = () => {
+  server.tryShutdown(() => {
+    logger.info("gRPC Server shutdown...");
+  });
+};

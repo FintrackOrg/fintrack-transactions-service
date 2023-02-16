@@ -1,10 +1,10 @@
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
-import { Logger } from "@config/logger.config";
 import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.mapper";
 import {
   GetTransactionsByAccountRequest,
   GetTransactionsByAccountResponse,
 } from "@infra/models/proto/transaction/v1/api_pb";
+import { Logger } from "@config/logger.config";
 import { ITransactionsService } from "@app/types/transactions.service.type";
 
 export class TransactionsController {
@@ -20,13 +20,19 @@ export class TransactionsController {
         call: ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
         callback: sendUnaryData<GetTransactionsByAccountResponse>
       ) {
-        logger.debug(call.request.toObject(), `Starting getTransactionsByAccount endpoint`);
-        if (!call.request.getAccountId()) {
-          return callback(new Error("left account id"));
+        try {
+          logger.debug(call.request.toObject(), `Starting getTransactionsByAccount endpoint`);
+          if (!call.request.getAccountId()) {
+            return callback(new Error("left account id"));
+          }
+          const transactionList = await service.getAccountTransactions(call.request.getAccountId());
+          const response = TransactionProtoMapper.toGetTransactionsByAccountResponse(transactionList);
+          callback(null, response);
+        } catch (error: any) {
+          console.log("error here");
+          logger.error({ error }, "Unexpected error on getTransactionsByAcccount endpoint");
+          callback(new Error("Unexpected error on getTransactionsByAcccount endpoint "));
         }
-        const transactionList = await service.getAccountTransactions(call.request.getAccountId());
-        const response = TransactionProtoMapper.toGetTransactionsByAccountResponse(transactionList);
-        callback(null, response);
       },
     };
   }

@@ -2,7 +2,6 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { EnvVarsConfig } from "@config/env-vars.config";
 import { Logger } from "@config/logger.config";
-import { TransactionDetailEntity } from "@domain/models/transactions.entity";
 
 import { TransactionRepository } from "@domain/types/transactions.repository";
 import { TransactionValue } from "@domain/models/transactions.value";
@@ -44,7 +43,7 @@ export class DynamodbRepository implements TransactionRepository {
       const productsResult = await this.ddbDocumentClient.send(new QueryCommand(queryProducts));
       return TransactionDDBMapper.fromDDBToTransactionValue(transactionsResult.Items!, productsResult.Items!);
     } catch (error: any) {
-      this.logger.error({ error }, "On getByAccountIdAndTransactionId");
+      this.logger.error({ error: error.message }, "On getByAccountIdAndTransactionId");
       throw error;
     }
   }
@@ -60,7 +59,7 @@ export class DynamodbRepository implements TransactionRepository {
       const result = await this.ddbDocumentClient.send(new QueryCommand(query));
       return TransactionDDBMapper.fromDDBAccountToTransactionValue(result.Items!);
     } catch (error: any) {
-      this.logger.error({ error }, "On getByAccountId");
+      this.logger.error({ error: error.message }, "On getByAccountId");
       throw error;
     }
   }
