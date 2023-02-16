@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import { Server, ServerCredentials } from "@grpc/grpc-js";
 import { TransactionsController } from "./infraestructure/controllers/transactions.controller";
-import { TransactionServiceService } from "./infraestructure/models/proto/transaction/v1/api_grpc_pb";
+import { TransactionServiceService } from "@fintrack-grpc/proto/transaction/v1/api_grpc_pb";
 import { CONFIG, EnvVarsConfig } from "./config/env-vars.config";
 import { DynamodbRepository } from "./infraestructure/repositories/dynamodb.repository";
 import { TransactionsService } from "./application/services/transactions.service";

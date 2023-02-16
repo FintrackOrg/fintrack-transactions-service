@@ -3,7 +3,7 @@ import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.
 import {
   GetTransactionsByAccountRequest,
   GetTransactionsByAccountResponse,
-} from "@infra/models/proto/transaction/v1/api_pb";
+} from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import { Logger } from "@config/logger.config";
 import { ITransactionsService } from "@app/types/transactions.service.type";
 

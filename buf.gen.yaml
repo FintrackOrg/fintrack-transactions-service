@@ -2,12 +2,12 @@ version: v1
 plugins:
   - name: js
     opt: import_style=commonjs,binary
-    out: src/infraestructure/models/proto
+    out: ./node_modules/@fintrack-grpc/proto
   - name: grpc
-    out: src/infraestructure/models/proto
+    out: ./node_modules/@fintrack-grpc/proto
     opt: grpc_js
     path: ./node_modules/.bin/grpc_tools_node_protoc_plugin
   - name: ts
-    out: src/infraestructure/models/proto
+    out: ./node_modules/@fintrack-grpc/proto
     opt: grpc_js
     path: ./node_modules/.bin/protoc-gen-ts
