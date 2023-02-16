@@ -2,7 +2,7 @@ import { TransactionServiceFake } from "@app/services/transactions.service.fake"
 import { generateFakeTransactionArray } from "@domain/models/transactions.value.fake";
 import { TransactionsController } from "@infra/controllers/transactions.controller";
 import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.mapper";
-import { GetTransactionsByAccountResponse } from "@infra/models/proto/transaction/v1/api_pb";
+import { GetTransactionsByAccountResponse } from "@fintrack-grpc/proto/transaction/v1/api_pb";
 
 describe("Transaction Controller Unit Tests", () => {
   let controller: ReturnType<TransactionsController["getImplementation"]>;

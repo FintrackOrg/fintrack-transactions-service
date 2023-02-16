@@ -1,10 +1,10 @@
 import { credentials } from "@grpc/grpc-js";
 
-import { TransactionServiceClient } from "@infra/models/proto/transaction/v1/api_grpc_pb";
+import { TransactionServiceClient } from "@fintrack-grpc/proto/transaction/v1/api_grpc_pb";
 import {
   GetTransactionsByAccountRequest,
   GetTransactionsByAccountResponse,
-} from "@infra/models/proto/transaction/v1/api_pb";
+} from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import * as gRPCServer from "../server";
 
 describe("TransactionService integration tests", () => {

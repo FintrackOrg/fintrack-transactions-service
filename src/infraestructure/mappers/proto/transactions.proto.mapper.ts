@@ -1,12 +1,12 @@
 import { Categories, PaymentMethods, TransactionDetailEntity } from "@domain/models/transactions.entity";
 import { TransactionValue } from "@domain/models/transactions.value";
-import { GetTransactionsByAccountResponse } from "@infra/models/proto/transaction/v1/api_pb";
+import { GetTransactionsByAccountResponse } from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import {
   Category,
   PaymentMethod,
   Transaction,
   TransactionDetail,
-} from "@infra/models/proto/transaction/v1/transaction_pb";
+} from "@fintrack-grpc/proto/transaction/v1/transaction_pb";
 
 const paymentMethodToProto = {
   [PaymentMethods.CASH]: PaymentMethod.PAYMENT_METHOD_CASH,
