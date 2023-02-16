@@ -6,6 +6,5 @@ module.exports = {
   testEnvironment: "node",
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
   collectCoverageFrom: ["./src/**"],
-  // testPathIgnorePatterns: ["/infraestructure/models/proto/", "/*.fake.ts"],
-  coveragePathIgnorePatterns: ["/infraestructure/models/proto/", "/*.fake.ts", "src/server.ts"],
+  coveragePathIgnorePatterns: ["/infraestructure/models/proto/", "/*.fake.ts", "src/server.ts", "src/init.ts"],
 };

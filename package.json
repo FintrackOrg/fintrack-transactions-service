@@ -2,15 +2,17 @@
   "name": "fintrack-transactions-service",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.ts",
+  "main": "src/init.ts",
   "scripts": {
-    "start": "nodemon --watch './**/*.ts' --exec 'ts-node' src/server.ts",
+    "start": "nodemon --watch './**/*.ts' --exec 'ts-node' src/init.ts",
     "start:dev": "PINO_LOG_LEVEL=debug nodemon",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",
     "compile": "tsc",
     "generate:proto": "buf generate buf.build/darvand/fintrackapis && buf generate buf.build/googleapis/googleapis",
-    "test": "jest"
+    "test": "jest",
+    "test:integration": "jest integration",
+    "test:unit": "jest unit"
   },
   "keywords": [],
   "author": "",
@@ -54,7 +56,7 @@
     "watch": [
       "src"
     ],
-    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
+    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/init.ts",
     "ext": "ts, js"
   }
 }
