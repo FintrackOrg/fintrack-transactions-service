@@ -12,7 +12,8 @@
     "generate:proto": "buf generate buf.build/darvand/fintrackapis && buf generate buf.build/googleapis/googleapis",
     "test": "jest",
     "test:integration": "jest integration",
-    "test:unit": "jest unit"
+    "test:unit": "jest unit",
+    "test:coverage": "jest unit --coverage"
   },
   "keywords": [],
   "author": "",
