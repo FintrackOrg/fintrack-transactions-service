@@ -10,7 +10,27 @@ jobs:
     strategy:
       matrix:
         node-version: [16.x]
+    
+    services:
+      localstack:
+        image: localstack/localstack
+        env:
+          SERVICES: dynamodb
+          DATA_DIR: /tmp/localstack/data
+          DYNAMODB_SHARE_DB: 1
+          HOSTNAME_EXTERNAL: localstack
+        ports:
+          - "4566-4599:4566-4599"
+        volumes:
+          - ./src/infraestructure/seeds:/docker-entrypoint-initaws.d
+          - /var/run/docker.sock:/var/run/docker.sock
+          - ./src/infraestructure/seeds:/opt/code/localstack/seeds
 
+    env:
+      AWS_REGION: "sa-east-1"
+      AWS_ENDPOINT: "http://localstack:4566"
+      AWS_CREDENTIALS_ACCESS_KEY_ID: "default_access_key"
+      AWS_CREDENTIALS_SECRET_ACCESS_KEY: "default_secret_key"
     steps:
       - uses: actions/checkout@v3
       - name: Install Buf
