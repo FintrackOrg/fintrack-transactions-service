@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node -r tsconfig-paths/register dist/init.js",
     "start:dev": "PINO_LOG_LEVEL=debug nodemon",
-    "build": "npm run clean && npm run compile",
+    "build": "npm run clean && npm run generate:proto && npm run compile",
     "clean": "rm -rf ./dist",
     "compile": "tsc && tsc-alias",
     "generate:proto": "buf generate buf.build/darvand/fintrackapis && buf generate buf.build/googleapis/googleapis",
