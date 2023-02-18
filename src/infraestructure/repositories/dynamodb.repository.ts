@@ -9,7 +9,7 @@ import { TransactionDDBMapper } from "@infra/mappers/dynamodb/transactions.ddb.m
 
 export class DynamodbRepository implements TransactionRepository {
   private readonly ddbDocumentClient: DynamoDBDocumentClient;
-  private readonly TABLE_NAME = "transactions";
+  private readonly TABLE_NAME;
   private readonly logger = new Logger(DynamodbRepository.name).logger;
 
   //TODO: Set mapper as a dependency
@@ -22,7 +22,9 @@ export class DynamodbRepository implements TransactionRepository {
         secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"],
       },
     });
+    this.logger.info({ config: this.config }, "using config");
     this.ddbDocumentClient = DynamoDBDocumentClient.from(ddbClient);
+    this.TABLE_NAME = this.config.get("aws")["ddb"]["tableName"];
   }
   async getByAccountIdAndTransactionId(accountId: string, transactionId: string): Promise<TransactionValue> {
     try {
@@ -51,7 +53,7 @@ export class DynamodbRepository implements TransactionRepository {
   async getByAccountId(accountId: string): Promise<TransactionValue[]> {
     try {
       const query = {
-        TableName: "transactions",
+        TableName: this.TABLE_NAME,
         KeyConditionExpression: "PK = :pk",
         ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}` },
       };
@@ -59,7 +61,7 @@ export class DynamodbRepository implements TransactionRepository {
       const result = await this.ddbDocumentClient.send(new QueryCommand(query));
       return TransactionDDBMapper.fromDDBAccountToTransactionValue(result.Items!);
     } catch (error: any) {
-      this.logger.error({ error: error.message }, "On getByAccountId");
+      this.logger.error({ error: error.message, accountId }, "On getByAccountId");
       throw error;
     }
   }

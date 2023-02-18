@@ -13,6 +13,9 @@ const envVars: Partial<IConfig> = {
       accessKeyId: "key",
       secretAccessKey: "secret",
     },
+    ddb: {
+      tableName: "test",
+    },
   },
 };
 

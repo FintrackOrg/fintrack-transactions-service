@@ -6,6 +6,9 @@ export type IConfig = {
       accessKeyId: string;
       secretAccessKey: string;
     };
+    ddb: {
+      tableName: string;
+    };
   };
 };
 
@@ -28,6 +31,9 @@ export const CONFIG: IConfig = {
     credentials: {
       accessKeyId: process.env.AWS_CREDENTIALS_ACCESS_KEY_ID!,
       secretAccessKey: process.env.AWS_CREDENTIALS_SECRET_ACCESS_KEY!,
+    },
+    ddb: {
+      tableName: process.env.AWS_DDB_TABLE_NAME!,
     },
   },
 };
