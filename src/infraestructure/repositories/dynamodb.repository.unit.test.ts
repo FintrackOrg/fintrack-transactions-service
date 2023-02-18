@@ -5,7 +5,7 @@ import { TransactionValue } from "@domain/models/transactions.value";
 import { generateFakeTransactionWithProducts } from "@infra/models/dynamodb/transactions.model.fake";
 import { DynamodbRepository } from "./dynamodb.repository";
 
-const envVars: Partial<IConfig> = {
+const envVars: IConfig = {
   aws: {
     region: "region",
     endpoint: "endpoint",
@@ -38,7 +38,7 @@ describe("DynamoDB repository Unit Tests", () => {
       const expectTransactionId = "transaction";
       sendMock.mockImplementationOnce((command: QueryCommand) => {
         const query = command.input;
-        expect(query.TableName).toBe("transactions");
+        expect(query.TableName).toBe(envVars.aws.ddb.tableName);
         expect(query.KeyConditionExpression).toBe("PK = :pk and begins_with(SK, :sk)");
         expect(query.ExpressionAttributeValues).toStrictEqual({
           ":pk": `ACCOUNT#${expectedAccountId}`,
@@ -48,7 +48,7 @@ describe("DynamoDB repository Unit Tests", () => {
       });
       sendMock.mockImplementationOnce((command: QueryCommand) => {
         expect(command.input).toStrictEqual({
-          TableName: "transactions",
+          TableName: envVars.aws.ddb.tableName,
           IndexName: "GSI1",
           KeyConditionExpression: "GS1PK = :gs1pk",
           ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${expectedAccountId}#TRANSACTION#${expectTransactionId}` },
@@ -74,7 +74,7 @@ describe("DynamoDB repository Unit Tests", () => {
       const { transactions, products } = generateFakeTransactionWithProducts();
       sendMock.mockImplementationOnce((command: QueryCommand) => {
         expect(command.input).toStrictEqual({
-          TableName: "transactions",
+          TableName: envVars.aws.ddb.tableName,
           KeyConditionExpression: "PK = :pk",
           ExpressionAttributeValues: { ":pk": `ACCOUNT#${expectedAccountId}` },
         });

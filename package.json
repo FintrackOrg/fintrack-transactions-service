@@ -10,7 +10,7 @@
     "clean": "rm -rf ./dist",
     "compile": "tsc && tsc-alias",
     "generate:proto": "buf generate buf.build/darvand/fintrackapis && buf generate buf.build/googleapis/googleapis",
-    "test": "jest",
+    "test": "AWS_DDB_TABLE_NAME=test-transactions jest",
     "test:integration": "AWS_DDB_TABLE_NAME=integration-transactions jest integration",
     "test:unit": "jest unit",
     "test:coverage": "jest unit --coverage"
