@@ -5,13 +5,13 @@
   "main": "src/init.ts",
   "scripts": {
     "start": "node -r tsconfig-paths/register dist/init.js",
-    "start:dev": "PINO_LOG_LEVEL=debug nodemon",
+    "start:dev": "NODE_ENV=dev PINO_LOG_LEVEL=debug nodemon",
     "build": "npm run clean && npm run generate:proto && npm run compile",
     "clean": "rm -rf ./dist",
     "compile": "tsc && tsc-alias",
     "generate:proto": "buf generate buf.build/darvand/fintrackapis && buf generate buf.build/googleapis/googleapis",
     "test": "jest",
-    "test:integration": "jest integration",
+    "test:integration": "AWS_DDB_TABLE_NAME=integration-transactions jest integration",
     "test:unit": "jest unit",
     "test:coverage": "jest unit --coverage"
   },

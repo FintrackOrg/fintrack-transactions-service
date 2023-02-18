@@ -3,13 +3,13 @@ import { faker } from "@faker-js/faker";
 import { ProductModelDDB, TransactionModelDDB } from "./transactions.model";
 
 export const generateFakeTransactionModelDDB = (transactionId: string) => {
+  const accountId = transactionId;
   const quantity = faker.datatype.number(50);
   const unitValue = faker.datatype.number();
-  const accountId = transactionId;
   const productId = faker.datatype.uuid();
   const detailId = faker.datatype.uuid();
   const transactionDDB: TransactionModelDDB = {
-    PK: `ACCOUNT#${faker.datatype.uuid()}`,
+    PK: `ACCOUNT#${accountId}`,
     SK: `TRANSACTION#${transactionId}#DETAIL#${detailId}`,
     Type: "TRANSACTION",
     Quantity: quantity,
