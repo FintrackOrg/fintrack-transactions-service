@@ -29,8 +29,7 @@ export class TransactionsController {
           const response = TransactionProtoMapper.toGetTransactionsByAccountResponse(transactionList);
           callback(null, response);
         } catch (error: any) {
-          console.log("error here");
-          logger.error({ error }, "Unexpected error on getTransactionsByAcccount endpoint");
+          logger.error({ error: error.message }, "Unexpected error on getTransactionsByAcccount endpoint");
           callback(new Error("Unexpected error on getTransactionsByAcccount endpoint "));
         }
       },

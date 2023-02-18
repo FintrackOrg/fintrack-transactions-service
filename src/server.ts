@@ -21,7 +21,7 @@ export const start = () => {
   return new Promise<void>((resolve, reject) => {
     server.bindAsync("0.0.0.0:50051", ServerCredentials.createInsecure(), (error, port) => {
       if (error) {
-        logger.error(error.message);
+        logger.error({ error: error.message }, "Unexpected error when starting server");
         reject(error);
       }
       server.start();
