@@ -32,7 +32,7 @@ export const generateFakeTransactionModelDDB = (transactionId: string): FakeTran
 
 export const generateFakeTransactionModelDDBArray = (
   transactionId: string,
-  length = LENGTH_DEFAULT
+  length = LENGTH_DEFAULT,
 ): FakeTransactionData[] => [...Array(length).keys()].map(() => generateFakeTransactionModelDDB(transactionId));
 
 export const generateFakeTransactionWithProducts = (): {
@@ -42,7 +42,7 @@ export const generateFakeTransactionWithProducts = (): {
   const transactionId = faker.datatype.uuid();
   const transactions = generateFakeTransactionModelDDBArray(transactionId);
   const products = transactions.map(({ detailId, productId }) =>
-    generateFakeProductModelDDB(transactionId, detailId, productId)
+    generateFakeProductModelDDB(transactionId, detailId, productId),
   );
   return {
     products,
@@ -53,7 +53,7 @@ export const generateFakeTransactionWithProducts = (): {
 export const generateFakeProductModelDDB = (
   transactionId: string,
   detailId: string,
-  productId: string
+  productId: string,
 ): ProductModelDDB => {
   const accountId = transactionId;
   return {

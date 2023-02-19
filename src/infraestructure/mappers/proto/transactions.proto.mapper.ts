@@ -47,7 +47,7 @@ export class TransactionProtoMapper {
 
   static toGetTransactionsByAccountResponse(transactions: TransactionValue[]): GetTransactionsByAccountResponse {
     return new GetTransactionsByAccountResponse().setTransactionsList(
-      transactions.map(TransactionProtoMapper.toProtoTransaction)
+      transactions.map(TransactionProtoMapper.toProtoTransaction),
     );
   }
 }

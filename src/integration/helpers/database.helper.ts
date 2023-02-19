@@ -59,7 +59,7 @@ export class DatabaseHelper {
             { AttributeName: "SK", KeyType: "RANGE" },
           ],
           TableName: this.tableName,
-        })
+        }),
       );
       await waitUntilTableExists({ client: this.ddbDocumentClient, maxWaitTime: 60 }, { TableName: this.tableName });
       this.logger.info(`Table ${this.tableName} created`);
@@ -93,7 +93,7 @@ export class DatabaseHelper {
             },
           })),
         },
-      })
+      }),
     );
   }
 }

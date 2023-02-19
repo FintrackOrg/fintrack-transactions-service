@@ -38,7 +38,7 @@ describe("Transaction Controller Unit Tests", () => {
 
     const response = await controller.getTransactionsByAccount(
       call as unknown as ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
-      callback as unknown as sendUnaryData<GetTransactionsByAccountResponse>
+      callback as unknown as sendUnaryData<GetTransactionsByAccountResponse>,
     );
     expect(response).toBeUndefined();
     expect(toObjectMock).toHaveBeenCalled();
@@ -62,7 +62,7 @@ describe("Transaction Controller Unit Tests", () => {
     };
     await controller.getTransactionsByAccount(
       call as unknown as ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
-      callback as unknown as sendUnaryData<GetTransactionsByAccountResponse>
+      callback as unknown as sendUnaryData<GetTransactionsByAccountResponse>,
     );
   });
 });

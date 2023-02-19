@@ -5,7 +5,7 @@ import { ProductModelDDB, TransactionModelDDB } from "@infra/models/dynamodb/tra
 export class TransactionDDBMapper {
   static fromDDBToTransactionValue(
     transactionsResult: Record<string, unknown>[],
-    productsResult: Record<string, unknown>[]
+    productsResult: Record<string, unknown>[],
   ): TransactionValue {
     const transactionsModel = transactionsResult as TransactionModelDDB[];
     const products = productsResult as ProductModelDDB[];
@@ -40,7 +40,7 @@ export class TransactionDDBMapper {
     const transactions = allItems.filter((item) => item.Type === "TRANSACTION") as TransactionModelDDB[];
     const products = allItems.filter((item) => item.Type === "PRODUCT") as ProductModelDDB[];
     const transactionIds = Array.from(
-      new Set(transactions.map((transaction) => `TRANSACTION#${transaction.SK.split("#")[1]}`))
+      new Set(transactions.map((transaction) => `TRANSACTION#${transaction.SK.split("#")[1]}`)),
     );
     const values = transactionIds.reduce<[Record<string, unknown>[], Record<string, unknown>[]][]>(
       (accum, transactionId) => {
@@ -48,7 +48,7 @@ export class TransactionDDBMapper {
         const productsGroupped = products.filter((product) => product.SK.includes(transactionId));
         return [...accum, [transactionsGroupped, productsGroupped]];
       },
-      []
+      [],
     );
     return values.map(([t, p]) => this.fromDDBToTransactionValue(t, p));
   }

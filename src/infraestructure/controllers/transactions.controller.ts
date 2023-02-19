@@ -19,7 +19,7 @@ export class TransactionsController {
     return {
       async getTransactionsByAccount(
         call: ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
-        callback: sendUnaryData<GetTransactionsByAccountResponse>
+        callback: sendUnaryData<GetTransactionsByAccountResponse>,
       ): Promise<void> {
         try {
           logger.debug(call.request.toObject(), `Starting getTransactionsByAccount endpoint`);
