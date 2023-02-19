@@ -5,6 +5,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
+    "useUnknownInCatchVariables": true,
     "paths": {
       "@app/*": ["src/application/*"],
       "@config/*": ["src/config/*"],

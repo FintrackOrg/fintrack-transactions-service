@@ -5,19 +5,19 @@ export class Logger {
 
   constructor(file: string) {
     this.logger = Pino.pino({
+      level: process.env.PINO_LOG_LEVEL || "info",
       transport:
         process.env.NODE_ENV === "dev"
           ? {
-              target: "pino-pretty",
               options: {
                 colorize: true,
-                translateTime: "yyyy-mm-dd HH:MM:ss",
-                messageFormat: "[{file}] {msg}",
                 ignore: "file",
+                messageFormat: "[{file}] {msg}",
+                translateTime: "yyyy-mm-dd HH:MM:ss",
               },
+              target: "pino-pretty",
             }
           : undefined,
-      level: process.env.PINO_LOG_LEVEL || "info",
     }).child({
       file,
     });

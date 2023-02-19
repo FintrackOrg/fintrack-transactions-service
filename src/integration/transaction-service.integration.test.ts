@@ -48,6 +48,7 @@ describe("TransactionService integration tests", () => {
       try {
         const { transactions, products } = generateFakeTransactionWithProducts();
         const expectedAccountId = transactions[0].PK.split("#")[1];
+        const expectedTransactions = 1;
         const request = new GetTransactionsByAccountRequest().setAccountId(expectedAccountId);
         dbHelper
           .createItem([...transactions, ...products])
@@ -55,9 +56,9 @@ describe("TransactionService integration tests", () => {
             client.getTransactionsByAccount(request, (error, response) => {
               expect(error).toBeNull();
               expect(response).toBeInstanceOf(GetTransactionsByAccountResponse);
-              const transactions = response.getTransactionsList();
-              expect(transactions).toHaveLength(1);
-              transactions.forEach((transaction) => {
+              const transactionsResponse = response.getTransactionsList();
+              expect(transactionsResponse).toHaveLength(expectedTransactions);
+              transactionsResponse.forEach((transaction) => {
                 expect(transaction.getAccountId()).toBe(expectedAccountId);
                 expect(transaction.getId()).toBeDefined();
                 expect(transaction.getSource()).toBeDefined();
@@ -84,7 +85,7 @@ describe("TransactionService integration tests", () => {
     });
     it("should fail when no account submited", (done) => {
       const request = new GetTransactionsByAccountRequest();
-      client.getTransactionsByAccount(request, (error, response) => {
+      client.getTransactionsByAccount(request, (error) => {
         expect(error).toBeDefined();
         done();
       });

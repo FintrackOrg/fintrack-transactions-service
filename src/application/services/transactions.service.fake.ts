@@ -12,11 +12,11 @@ export class TransactionServiceFake implements ITransactionsService {
     }
     return Promise.resolve(this.transactions);
   }
-  getTransactionDetails(accountId: string, transactionId: string): Promise<TransactionValue> {
+  getTransactionDetails(): Promise<TransactionValue> {
     throw new Error("Method not implemented.");
   }
 
-  setTransactions(transactions: TransactionValue[] = []) {
+  setTransactions(transactions: TransactionValue[] = []): void {
     this.transactions = transactions;
   }
 }

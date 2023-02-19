@@ -11,14 +11,14 @@ import { Logger } from "./config/logger.config";
 let server: Server;
 const logger = new Logger("server").logger;
 
-export const start = () => {
+export const start = (): Promise<void> => {
   server = new Server();
   const config = new EnvVarsConfig(CONFIG);
   const repo = new DynamodbRepository(config);
   const service = new TransactionsService(repo);
   const controller = new TransactionsController(service);
   server.addService(TransactionServiceService, controller.getImplementation());
-  return new Promise<void>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     server.bindAsync("0.0.0.0:50051", ServerCredentials.createInsecure(), (error, port) => {
       if (error) {
         logger.error({ error: error.message }, "Unexpected error when starting server");
@@ -31,7 +31,7 @@ export const start = () => {
   });
 };
 
-export const shutdown = () => {
+export const shutdown = (): void => {
   server.tryShutdown(() => {
     logger.info("gRPC Server shutdown...");
   });

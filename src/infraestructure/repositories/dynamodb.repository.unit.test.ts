@@ -7,8 +7,6 @@ import { DynamodbRepository } from "./dynamodb.repository";
 
 const envVars: IConfig = {
   aws: {
-    region: "region",
-    endpoint: "endpoint",
     credentials: {
       accessKeyId: "key",
       secretAccessKey: "secret",
@@ -16,6 +14,8 @@ const envVars: IConfig = {
     ddb: {
       tableName: "test",
     },
+    endpoint: "endpoint",
+    region: "region",
   },
 };
 
@@ -27,7 +27,7 @@ describe("DynamoDB repository Unit Tests", () => {
   beforeAll(() => {
     jest.spyOn(DynamoDBDocumentClient, "from").mockReturnValueOnce({
       send: sendMock,
-    } as any);
+    } as unknown as DynamoDBDocumentClient);
     config = new EnvVarsConfig(envVars as IConfig);
     repository = new DynamodbRepository(config);
   });
@@ -38,7 +38,7 @@ describe("DynamoDB repository Unit Tests", () => {
       const expectTransactionId = "transaction";
       sendMock.mockImplementationOnce((command: QueryCommand) => {
         const query = command.input;
-        expect(query.TableName).toBe(envVars.aws.ddb.tableName);
+        expect(query.TableName).toBe(envVars.aws.ddb?.tableName);
         expect(query.KeyConditionExpression).toBe("PK = :pk and begins_with(SK, :sk)");
         expect(query.ExpressionAttributeValues).toStrictEqual({
           ":pk": `ACCOUNT#${expectedAccountId}`,
@@ -48,10 +48,10 @@ describe("DynamoDB repository Unit Tests", () => {
       });
       sendMock.mockImplementationOnce((command: QueryCommand) => {
         expect(command.input).toStrictEqual({
-          TableName: envVars.aws.ddb.tableName,
+          ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${expectedAccountId}#TRANSACTION#${expectTransactionId}` },
           IndexName: "GSI1",
           KeyConditionExpression: "GS1PK = :gs1pk",
-          ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${expectedAccountId}#TRANSACTION#${expectTransactionId}` },
+          TableName: envVars.aws.ddb?.tableName,
         });
         return { Items: products };
       });
@@ -71,17 +71,18 @@ describe("DynamoDB repository Unit Tests", () => {
   describe("getByAccountId method", () => {
     it("should search by given account id and return all transactions related", async () => {
       const expectedAccountId = "account";
+      const expectedTransactionsLength = 1;
       const { transactions, products } = generateFakeTransactionWithProducts();
       sendMock.mockImplementationOnce((command: QueryCommand) => {
         expect(command.input).toStrictEqual({
-          TableName: envVars.aws.ddb.tableName,
-          KeyConditionExpression: "PK = :pk",
           ExpressionAttributeValues: { ":pk": `ACCOUNT#${expectedAccountId}` },
+          KeyConditionExpression: "PK = :pk",
+          TableName: envVars.aws.ddb?.tableName,
         });
         return { Items: [...transactions, ...products] };
       });
       const response = await repository.getByAccountId(expectedAccountId);
-      expect(response).toHaveLength(1);
+      expect(response).toHaveLength(expectedTransactionsLength);
       expect(response[0].details).toHaveLength(transactions.length);
     });
 
