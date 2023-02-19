@@ -9,14 +9,14 @@ const envVars: IConfig = {
   aws: {
     credentials: {
       accessKeyId: "key",
-      secretAccessKey: "secret",
+      secretAccessKey: "secret"
     },
     ddb: {
-      tableName: "test",
+      tableName: "test"
     },
     endpoint: "endpoint",
-    region: "region",
-  },
+    region: "region"
+  }
 };
 
 describe("DynamoDB repository Unit Tests", () => {
@@ -26,7 +26,7 @@ describe("DynamoDB repository Unit Tests", () => {
 
   beforeAll(() => {
     jest.spyOn(DynamoDBDocumentClient, "from").mockReturnValueOnce({
-      send: sendMock,
+      send: sendMock
     } as unknown as DynamoDBDocumentClient);
     config = new EnvVarsConfig(envVars as IConfig);
     repository = new DynamodbRepository(config);
@@ -42,7 +42,7 @@ describe("DynamoDB repository Unit Tests", () => {
         expect(query.KeyConditionExpression).toBe("PK = :pk and begins_with(SK, :sk)");
         expect(query.ExpressionAttributeValues).toStrictEqual({
           ":pk": `ACCOUNT#${expectedAccountId}`,
-          ":sk": `TRANSACTION#${expectTransactionId}`,
+          ":sk": `TRANSACTION#${expectTransactionId}`
         });
         return { Items: transactions };
       });
@@ -51,7 +51,7 @@ describe("DynamoDB repository Unit Tests", () => {
           ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${expectedAccountId}#TRANSACTION#${expectTransactionId}` },
           IndexName: "GSI1",
           KeyConditionExpression: "GS1PK = :gs1pk",
-          TableName: envVars.aws.ddb?.tableName,
+          TableName: envVars.aws.ddb?.tableName
         });
         return { Items: products };
       });
@@ -77,7 +77,7 @@ describe("DynamoDB repository Unit Tests", () => {
         expect(command.input).toStrictEqual({
           ExpressionAttributeValues: { ":pk": `ACCOUNT#${expectedAccountId}` },
           KeyConditionExpression: "PK = :pk",
-          TableName: envVars.aws.ddb?.tableName,
+          TableName: envVars.aws.ddb?.tableName
         });
         return { Items: [...transactions, ...products] };
       });

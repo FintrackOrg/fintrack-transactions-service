@@ -4,7 +4,7 @@ import { TransactionsController } from "@infra/controllers/transactions.controll
 import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.mapper";
 import {
   GetTransactionsByAccountResponse,
-  GetTransactionsByAccountRequest,
+  GetTransactionsByAccountRequest
 } from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 
@@ -28,8 +28,8 @@ describe("Transaction Controller Unit Tests", () => {
     const call = {
       request: {
         getAccountId: getAccountIdMock,
-        toObject: toObjectMock,
-      },
+        toObject: toObjectMock
+      }
     };
     const callback = (error: unknown, response: GetTransactionsByAccountResponse): void => {
       expect(error).toBeNull();
@@ -54,8 +54,8 @@ describe("Transaction Controller Unit Tests", () => {
     const call = {
       request: {
         getAccountId: getAccountIdMock,
-        toObject: toObjectMock,
-      },
+        toObject: toObjectMock
+      }
     };
     const callback = (error: unknown): void => {
       expect(error).toBeDefined();

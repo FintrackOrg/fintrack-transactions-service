@@ -13,13 +13,13 @@ export class Logger {
                 colorize: true,
                 ignore: "file",
                 messageFormat: "[{file}] {msg}",
-                translateTime: "yyyy-mm-dd HH:MM:ss",
+                translateTime: "yyyy-mm-dd HH:MM:ss"
               },
-              target: "pino-pretty",
+              target: "pino-pretty"
             }
-          : undefined,
+          : undefined
     }).child({
-      file,
+      file
     });
   }
 }

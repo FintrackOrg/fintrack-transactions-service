@@ -10,6 +10,7 @@
   "rules": {
     "no-magic-numbers": ["error", { "ignoreArrayIndexes": true, "ignore": [0] }],
     "comma-style": "error",
+    "comma-dangle": "error",
     "sort-keys": "error",
     "@typescript-eslint/explicit-function-return-type": "error"
   }
