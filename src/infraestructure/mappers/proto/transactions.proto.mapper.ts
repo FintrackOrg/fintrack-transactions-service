@@ -5,13 +5,13 @@ import {
   Category,
   PaymentMethod,
   Transaction,
-  TransactionDetail
+  TransactionDetail,
 } from "@fintrack-grpc/proto/transaction/v1/transaction_pb";
 
 const paymentMethodToProto = {
   [PaymentMethods.CASH]: PaymentMethod.PAYMENT_METHOD_CASH,
   [PaymentMethods.CREDIT]: PaymentMethod.PAYMENT_METHOD_CREDIT,
-  [PaymentMethods.DEBIT]: PaymentMethod.PAYMENT_METHOD_DEBIT
+  [PaymentMethods.DEBIT]: PaymentMethod.PAYMENT_METHOD_DEBIT,
 };
 
 const categoryToProto = {
@@ -19,7 +19,7 @@ const categoryToProto = {
   [Categories.FOOD]: Category.CATEGORY_FOOD,
   [Categories.CLOTHS]: Category.CATEGORY_CLOTHS,
   [Categories.PETS]: Category.CATEGORY_PETS,
-  [Categories.HOUSE]: Category.CATEGORY_HOUSE
+  [Categories.HOUSE]: Category.CATEGORY_HOUSE,
 };
 
 export class TransactionProtoMapper {

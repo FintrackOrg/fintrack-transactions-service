@@ -7,7 +7,7 @@ import {
   waitUntilTableExists,
   waitUntilTableNotExists,
   WriteRequest,
-  AttributeValue
+  AttributeValue,
 } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { CONFIG, EnvVarsConfig } from "@config/env-vars.config";
@@ -25,10 +25,10 @@ export class DatabaseHelper {
     const ddbClient = new DynamoDBClient({
       credentials: {
         accessKeyId: this.config.get("aws")["credentials"]["accessKeyId"],
-        secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"]
+        secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"],
       },
       endpoint: this.config.get("aws")["endpoint"],
-      region: this.config.get("aws")["region"]
+      region: this.config.get("aws")["region"],
     });
     this.ddbDocumentClient = DynamoDBDocumentClient.from(ddbClient);
     this.tableName = this.config.get("aws")["ddb"]["tableName"];
@@ -41,7 +41,7 @@ export class DatabaseHelper {
         new CreateTableCommand({
           AttributeDefinitions: ["PK", "SK", "GS1PK", "GS1SK"].map((key) => ({
             AttributeName: key,
-            AttributeType: "S"
+            AttributeType: "S",
           })),
           BillingMode: "PAY_PER_REQUEST",
           GlobalSecondaryIndexes: [
@@ -49,16 +49,16 @@ export class DatabaseHelper {
               IndexName: "GSI1",
               KeySchema: [
                 { AttributeName: "GS1PK", KeyType: "HASH" },
-                { AttributeName: "GS1SK", KeyType: "RANGE" }
+                { AttributeName: "GS1SK", KeyType: "RANGE" },
               ],
-              Projection: { ProjectionType: "ALL" }
-            }
+              Projection: { ProjectionType: "ALL" },
+            },
           ],
           KeySchema: [
             { AttributeName: "PK", KeyType: "HASH" },
-            { AttributeName: "SK", KeyType: "RANGE" }
+            { AttributeName: "SK", KeyType: "RANGE" },
           ],
-          TableName: this.tableName
+          TableName: this.tableName,
         })
       );
       await waitUntilTableExists({ client: this.ddbDocumentClient, maxWaitTime: 60 }, { TableName: this.tableName });
@@ -89,10 +89,10 @@ export class DatabaseHelper {
                   return { ...obj, [key]: { S: value } };
                 }
                 return { ...obj, [key]: { N: String(value) } };
-              }, {} as Record<string, AttributeValue>)
-            }
-          }))
-        }
+              }, {} as Record<string, AttributeValue>),
+            },
+          })),
+        },
       })
     );
   }

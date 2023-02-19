@@ -20,7 +20,7 @@ export class TransactionDDBMapper {
         name: product.Name,
         quantity: detail.Quantity,
         total: detail.UnitValue * detail.Quantity,
-        unitValue: detail.UnitValue
+        unitValue: detail.UnitValue,
       };
     });
     const value = details.reduce((accum, detail) => accum + detail.total, 0);
@@ -32,7 +32,7 @@ export class TransactionDDBMapper {
       paymentMethod: PaymentMethods.CASH,
       source: transactionsModel[0].Source,
       userId: transactionsModel[0].UserId,
-      value
+      value,
     });
   }
 

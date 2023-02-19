@@ -2,7 +2,7 @@ import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.mapper";
 import {
   GetTransactionsByAccountRequest,
-  GetTransactionsByAccountResponse
+  GetTransactionsByAccountResponse,
 } from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import { Logger } from "@config/logger.config";
 import { ITransactionsService } from "@app/types/transactions.service.type";
@@ -33,7 +33,7 @@ export class TransactionsController {
           logger.error({ error }, "Unexpected error on getTransactionsByAcccount endpoint");
           callback(new Error("Unexpected error on getTransactionsByAcccount endpoint "));
         }
-      }
+      },
     };
   }
 }

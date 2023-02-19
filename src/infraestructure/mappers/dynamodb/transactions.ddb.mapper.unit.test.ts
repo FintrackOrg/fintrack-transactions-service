@@ -18,7 +18,7 @@ describe("Transaction DynamoDB mappers Unit Test", () => {
       const expectedTransactionsLength = 1;
       const response = TransactionDDBMapper.fromDDBAccountToTransactionValue([
         ...transaction.transactions,
-        ...transaction.products
+        ...transaction.products,
       ]);
       expect(response).toHaveLength(expectedTransactionsLength);
       expect(response[0]).toBeInstanceOf(TransactionValue);

@@ -17,10 +17,10 @@ export class DynamodbRepository implements TransactionRepository {
     const ddbClient = new DynamoDBClient({
       credentials: {
         accessKeyId: this.config.get("aws")["credentials"]["accessKeyId"],
-        secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"]
+        secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"],
       },
       endpoint: this.config.get("aws")["endpoint"],
-      region: this.config.get("aws")["region"]
+      region: this.config.get("aws")["region"],
     });
     this.logger.info({ config: this.config }, "using config");
     this.ddbDocumentClient = DynamoDBDocumentClient.from(ddbClient);
@@ -31,7 +31,7 @@ export class DynamodbRepository implements TransactionRepository {
       const query = {
         ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}`, ":sk": `TRANSACTION#${transactionId}` },
         KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
-        TableName: this.TABLE_NAME
+        TableName: this.TABLE_NAME,
       };
       this.logger.debug({ query }, "Searching transaction");
       const transactionsResult = await this.ddbDocumentClient.send(new QueryCommand(query));
@@ -40,7 +40,7 @@ export class DynamodbRepository implements TransactionRepository {
         ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${accountId}#TRANSACTION#${transactionId}` },
         IndexName: "GSI1",
         KeyConditionExpression: "GS1PK = :gs1pk",
-        TableName: this.TABLE_NAME
+        TableName: this.TABLE_NAME,
       };
       this.logger.debug({ queryProducts }, "Searching products for transaction");
       const productsResult = await this.ddbDocumentClient.send(new QueryCommand(queryProducts));
@@ -58,7 +58,7 @@ export class DynamodbRepository implements TransactionRepository {
       const query = {
         ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}` },
         KeyConditionExpression: "PK = :pk",
-        TableName: this.TABLE_NAME
+        TableName: this.TABLE_NAME,
       };
       this.logger.debug({ query }, "Searching transactions for account");
       const result = await this.ddbDocumentClient.send(new QueryCommand(query));

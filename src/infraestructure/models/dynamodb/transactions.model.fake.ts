@@ -25,7 +25,7 @@ export const generateFakeTransactionModelDDB = (transactionId: string): FakeTran
     Total: quantity * unitValue,
     Type: "TRANSACTION",
     UnitValue: unitValue,
-    UserId: faker.datatype.uuid()
+    UserId: faker.datatype.uuid(),
   };
   return { detailId, productId, transactionDDB };
 };
@@ -46,7 +46,7 @@ export const generateFakeTransactionWithProducts = (): {
   );
   return {
     products,
-    transactions: transactions.map((t) => t.transactionDDB)
+    transactions: transactions.map((t) => t.transactionDDB),
   };
 };
 
@@ -63,13 +63,13 @@ export const generateFakeProductModelDDB = (
       Categories.FOOD,
       Categories.GROCERIES,
       Categories.HOUSE,
-      Categories.PETS
+      Categories.PETS,
     ]),
     GS1PK: `ACCOUNT#${accountId}#TRANSACTION#${transactionId}`,
     GS1SK: `DETAIL#${detailId}#PRODUCT#${productId}`,
     Name: faker.commerce.productName(),
     PK: `ACCOUNT#${accountId}`,
     SK: `PRODUCT#${productId}#TRANSACTION#${transactionId}`,
-    Type: "PRODUCT"
+    Type: "PRODUCT",
   };
 };
