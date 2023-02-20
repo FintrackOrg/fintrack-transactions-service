@@ -15,12 +15,12 @@ export class DynamodbRepository implements TransactionRepository {
   //TODO: Set mapper as a dependency
   constructor(private readonly config: EnvVarsConfig) {
     const ddbClient = new DynamoDBClient({
-      region: this.config.get("aws")["region"],
-      endpoint: this.config.get("aws")["endpoint"],
       credentials: {
         accessKeyId: this.config.get("aws")["credentials"]["accessKeyId"],
         secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"],
       },
+      endpoint: this.config.get("aws")["endpoint"],
+      region: this.config.get("aws")["region"],
     });
     this.logger.info({ config: this.config }, "using config");
     this.ddbDocumentClient = DynamoDBDocumentClient.from(ddbClient);
@@ -29,23 +29,26 @@ export class DynamodbRepository implements TransactionRepository {
   async getByAccountIdAndTransactionId(accountId: string, transactionId: string): Promise<TransactionValue> {
     try {
       const query = {
-        TableName: this.TABLE_NAME,
-        KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
         ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}`, ":sk": `TRANSACTION#${transactionId}` },
+        KeyConditionExpression: "PK = :pk and begins_with(SK, :sk)",
+        TableName: this.TABLE_NAME,
       };
       this.logger.debug({ query }, "Searching transaction");
       const transactionsResult = await this.ddbDocumentClient.send(new QueryCommand(query));
+      if (!transactionsResult.Items) throw new Error("Items attribute from transactions not found");
       const queryProducts = {
-        TableName: this.TABLE_NAME,
+        ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${accountId}#TRANSACTION#${transactionId}` },
         IndexName: "GSI1",
         KeyConditionExpression: "GS1PK = :gs1pk",
-        ExpressionAttributeValues: { ":gs1pk": `ACCOUNT#${accountId}#TRANSACTION#${transactionId}` },
+        TableName: this.TABLE_NAME,
       };
       this.logger.debug({ queryProducts }, "Searching products for transaction");
       const productsResult = await this.ddbDocumentClient.send(new QueryCommand(queryProducts));
-      return TransactionDDBMapper.fromDDBToTransactionValue(transactionsResult.Items!, productsResult.Items!);
-    } catch (error: any) {
-      this.logger.error({ error: error.message }, "On getByAccountIdAndTransactionId");
+      if (!productsResult.Items) throw new Error("Items attribute from products not found");
+
+      return TransactionDDBMapper.fromDDBToTransactionValue(transactionsResult.Items, productsResult.Items);
+    } catch (error) {
+      this.logger.error({ error }, "On getByAccountIdAndTransactionId");
       throw error;
     }
   }
@@ -53,15 +56,17 @@ export class DynamodbRepository implements TransactionRepository {
   async getByAccountId(accountId: string): Promise<TransactionValue[]> {
     try {
       const query = {
-        TableName: this.TABLE_NAME,
-        KeyConditionExpression: "PK = :pk",
         ExpressionAttributeValues: { ":pk": `ACCOUNT#${accountId}` },
+        KeyConditionExpression: "PK = :pk",
+        TableName: this.TABLE_NAME,
       };
       this.logger.debug({ query }, "Searching transactions for account");
       const result = await this.ddbDocumentClient.send(new QueryCommand(query));
-      return TransactionDDBMapper.fromDDBAccountToTransactionValue(result.Items!);
-    } catch (error: any) {
-      this.logger.error({ error: error.message, accountId }, "On getByAccountId");
+      if (!result.Items) throw new Error("Items attribute not found");
+
+      return TransactionDDBMapper.fromDDBAccountToTransactionValue(result.Items);
+    } catch (error) {
+      this.logger.error({ accountId, error }, "On getByAccountId");
       throw error;
     }
   }

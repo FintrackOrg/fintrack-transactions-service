@@ -6,20 +6,21 @@ import {
 } from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import { Logger } from "@config/logger.config";
 import { ITransactionsService } from "@app/types/transactions.service.type";
+import { GRPCServer } from "@fintrack-grpc/proto/transaction/v1/api_grpc_pb";
 
 export class TransactionsController {
   private readonly logger = new Logger(TransactionsController.name).logger;
 
   constructor(private readonly transactionsService: ITransactionsService) {}
 
-  getImplementation() {
+  getImplementation(): GRPCServer {
     const service = this.transactionsService;
     const logger = this.logger;
     return {
       async getTransactionsByAccount(
         call: ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
-        callback: sendUnaryData<GetTransactionsByAccountResponse>
-      ) {
+        callback: sendUnaryData<GetTransactionsByAccountResponse>,
+      ): Promise<void> {
         try {
           logger.debug(call.request.toObject(), `Starting getTransactionsByAccount endpoint`);
           if (!call.request.getAccountId()) {
@@ -28,8 +29,8 @@ export class TransactionsController {
           const transactionList = await service.getAccountTransactions(call.request.getAccountId());
           const response = TransactionProtoMapper.toGetTransactionsByAccountResponse(transactionList);
           callback(null, response);
-        } catch (error: any) {
-          logger.error({ error: error.message }, "Unexpected error on getTransactionsByAcccount endpoint");
+        } catch (error) {
+          logger.error({ error }, "Unexpected error on getTransactionsByAcccount endpoint");
           callback(new Error("Unexpected error on getTransactionsByAcccount endpoint "));
         }
       },

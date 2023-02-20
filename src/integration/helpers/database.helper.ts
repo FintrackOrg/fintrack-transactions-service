@@ -23,32 +23,27 @@ export class DatabaseHelper {
   constructor() {
     this.config = new EnvVarsConfig(CONFIG);
     const ddbClient = new DynamoDBClient({
-      region: this.config.get("aws")["region"],
-      endpoint: this.config.get("aws")["endpoint"],
       credentials: {
         accessKeyId: this.config.get("aws")["credentials"]["accessKeyId"],
         secretAccessKey: this.config.get("aws")["credentials"]["secretAccessKey"],
       },
+      endpoint: this.config.get("aws")["endpoint"],
+      region: this.config.get("aws")["region"],
     });
     this.ddbDocumentClient = DynamoDBDocumentClient.from(ddbClient);
     this.tableName = this.config.get("aws")["ddb"]["tableName"];
   }
 
-  async createTable() {
+  async createTable(): Promise<void> {
     try {
       this.logger.info(`Creating table ${this.tableName}`);
       await this.ddbDocumentClient.send(
         new CreateTableCommand({
-          BillingMode: "PAY_PER_REQUEST",
-          TableName: this.tableName,
           AttributeDefinitions: ["PK", "SK", "GS1PK", "GS1SK"].map((key) => ({
             AttributeName: key,
             AttributeType: "S",
           })),
-          KeySchema: [
-            { AttributeName: "PK", KeyType: "HASH" },
-            { AttributeName: "SK", KeyType: "RANGE" },
-          ],
+          BillingMode: "PAY_PER_REQUEST",
           GlobalSecondaryIndexes: [
             {
               IndexName: "GSI1",
@@ -59,25 +54,30 @@ export class DatabaseHelper {
               Projection: { ProjectionType: "ALL" },
             },
           ],
-        })
+          KeySchema: [
+            { AttributeName: "PK", KeyType: "HASH" },
+            { AttributeName: "SK", KeyType: "RANGE" },
+          ],
+          TableName: this.tableName,
+        }),
       );
       await waitUntilTableExists({ client: this.ddbDocumentClient, maxWaitTime: 60 }, { TableName: this.tableName });
       this.logger.info(`Table ${this.tableName} created`);
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof TableAlreadyExistsException) {
         this.logger.info("Table already exists");
       }
     }
   }
 
-  async deleteTable() {
+  async deleteTable(): Promise<void> {
     this.logger.info("Deleting table");
     await this.ddbDocumentClient.send(new DeleteTableCommand({ TableName: this.tableName }));
     await waitUntilTableNotExists({ client: this.ddbDocumentClient, maxWaitTime: 60 }, { TableName: this.tableName });
     this.logger.info("Table deleted");
   }
 
-  async createItem(items: TransactionDDB[]) {
+  async createItem(items: TransactionDDB[]): Promise<void> {
     await this.ddbDocumentClient.send(
       new BatchWriteItemCommand({
         RequestItems: {
@@ -93,7 +93,7 @@ export class DatabaseHelper {
             },
           })),
         },
-      })
+      }),
     );
   }
 }

@@ -2,7 +2,11 @@ import { TransactionServiceFake } from "@app/services/transactions.service.fake"
 import { generateFakeTransactionArray } from "@domain/models/transactions.value.fake";
 import { TransactionsController } from "@infra/controllers/transactions.controller";
 import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.mapper";
-import { GetTransactionsByAccountResponse } from "@fintrack-grpc/proto/transaction/v1/api_pb";
+import {
+  GetTransactionsByAccountResponse,
+  GetTransactionsByAccountRequest,
+} from "@fintrack-grpc/proto/transaction/v1/api_pb";
+import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 
 describe("Transaction Controller Unit Tests", () => {
   let controller: ReturnType<TransactionsController["getImplementation"]>;
@@ -23,16 +27,19 @@ describe("Transaction Controller Unit Tests", () => {
     const getAccountIdMock = jest.fn().mockReturnValue(expectedAccountId);
     const call = {
       request: {
-        toObject: toObjectMock,
         getAccountId: getAccountIdMock,
+        toObject: toObjectMock,
       },
     };
-    const callback = (error: any, response: GetTransactionsByAccountResponse) => {
+    const callback = (error: unknown, response: GetTransactionsByAccountResponse): void => {
       expect(error).toBeNull();
       expect(response).toBeInstanceOf(GetTransactionsByAccountResponse);
     };
 
-    const response = await controller.getTransactionsByAccount(call as any, callback as any);
+    const response = await controller.getTransactionsByAccount(
+      call as unknown as ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
+      callback as unknown as sendUnaryData<GetTransactionsByAccountResponse>,
+    );
     expect(response).toBeUndefined();
     expect(toObjectMock).toHaveBeenCalled();
     expect(getAccountIdMock).toHaveBeenCalled();
@@ -46,13 +53,16 @@ describe("Transaction Controller Unit Tests", () => {
     const getAccountIdMock = jest.fn().mockReturnValue(undefined);
     const call = {
       request: {
-        toObject: toObjectMock,
         getAccountId: getAccountIdMock,
+        toObject: toObjectMock,
       },
     };
-    const callback = (error: any) => {
+    const callback = (error: unknown): void => {
       expect(error).toBeDefined();
     };
-    await controller.getTransactionsByAccount(call as any, callback as any);
+    await controller.getTransactionsByAccount(
+      call as unknown as ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
+      callback as unknown as sendUnaryData<GetTransactionsByAccountResponse>,
+    );
   });
 });

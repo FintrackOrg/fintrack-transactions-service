@@ -14,8 +14,8 @@ export class TransactionsService implements ITransactionsService {
       const transactions = await this.repository.getByAccountId(userId);
       this.logger.debug({ transactions: transactions.length }, "Successfully get transactions");
       return transactions;
-    } catch (error: any) {
-      this.logger.error({ error: error.message }, "Unexpected error when trying to get transactions for account");
+    } catch (error) {
+      this.logger.error({ error }, "Unexpected error when trying to get transactions for account");
       throw error;
     }
   }
@@ -26,8 +26,8 @@ export class TransactionsService implements ITransactionsService {
       const transaction = await this.repository.getByAccountIdAndTransactionId(accountId, transactionId);
       this.logger.debug({ transaction }, "Sucessfully get transaction");
       return transaction;
-    } catch (error: any) {
-      this.logger.error({ error: error.message }, "Unexpected error when trying to get transaction");
+    } catch (error) {
+      this.logger.error({ error }, "Unexpected error when trying to get transaction");
       throw error;
     }
   }

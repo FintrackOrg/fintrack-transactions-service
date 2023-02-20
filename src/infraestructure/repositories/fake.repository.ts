@@ -4,7 +4,7 @@ import { TransactionRepository } from "@domain/types/transactions.repository";
 export class FakeRepository implements TransactionRepository {
   transactions: TransactionValue[] = [];
 
-  setTransactions(transactions: TransactionValue[]) {
+  setTransactions(transactions: TransactionValue[]): void {
     this.transactions = transactions;
   }
 

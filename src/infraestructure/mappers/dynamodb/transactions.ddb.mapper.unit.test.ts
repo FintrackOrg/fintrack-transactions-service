@@ -15,11 +15,12 @@ describe("Transaction DynamoDB mappers Unit Test", () => {
   describe("fromDDBAccountToTransactionValue method", () => {
     it("should merge transactions and products", () => {
       const transaction = generateFakeTransactionWithProducts();
+      const expectedTransactionsLength = 1;
       const response = TransactionDDBMapper.fromDDBAccountToTransactionValue([
         ...transaction.transactions,
         ...transaction.products,
       ]);
-      expect(response).toHaveLength(1);
+      expect(response).toHaveLength(expectedTransactionsLength);
       expect(response[0]).toBeInstanceOf(TransactionValue);
       expect(response[0].details).toHaveLength(transaction.transactions.length);
     });
