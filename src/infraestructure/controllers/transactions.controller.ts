@@ -6,14 +6,14 @@ import {
 } from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import { Logger } from "@config/logger.config";
 import { ITransactionsService } from "@app/types/transactions.service.type";
-import { GRPCServer } from "@fintrack-grpc/proto/transaction/v1/api_grpc_pb";
+import { ITransactionServiceServer } from "@fintrack-grpc/proto/transaction/v1/api_grpc_pb";
 
 export class TransactionsController {
   private readonly logger = new Logger(TransactionsController.name).logger;
 
   constructor(private readonly transactionsService: ITransactionsService) {}
 
-  getImplementation(): GRPCServer {
+  getImplementation(): ITransactionServiceServer {
     const service = this.transactionsService;
     const logger = this.logger;
     return {
