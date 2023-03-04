@@ -5,7 +5,6 @@ export const INVALID_ACCOUNT_ID = "invalid_account_id";
 
 export class TransactionServiceFake implements ITransactionsService {
   private transactions: TransactionValue[] = [];
-
   getAccountTransactions(accountId: string): Promise<TransactionValue[]> {
     if (accountId === INVALID_ACCOUNT_ID) {
       throw new Error();
@@ -18,5 +17,9 @@ export class TransactionServiceFake implements ITransactionsService {
 
   setTransactions(transactions: TransactionValue[] = []): void {
     this.transactions = transactions;
+  }
+
+  createAccountTransaction(transaction: TransactionValue): Promise<TransactionValue> {
+    return Promise.resolve(transaction);
   }
 }

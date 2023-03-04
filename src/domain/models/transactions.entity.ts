@@ -1,10 +1,12 @@
 export enum PaymentMethods {
+  UNESPECIFIED = "UNESPECIFIED",
   CREDIT = "CREDIT",
   DEBIT = "DEBIT",
   CASH = "CASH",
 }
 
 export enum Categories {
+  UNSPECIFIED = "UNSPECIFIED",
   GROCERIES = "GROCERIES",
   FOOD = "FOOD",
   CLOTHS = "CLOTHS",
@@ -20,6 +22,7 @@ export type TransactionDetailEntity = {
   unitValue: number;
   name: string;
   brand: string;
+  productId: string;
 };
 
 export type TransactionEntity = {

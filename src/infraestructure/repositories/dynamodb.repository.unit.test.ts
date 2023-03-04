@@ -2,6 +2,7 @@ import { QueryCommand } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { EnvVarsConfig, IConfig } from "@config/env-vars.config";
 import { TransactionValue } from "@domain/models/transactions.value";
+import { generateFakeTransactionValue } from "@domain/models/transactions.value.fake";
 import { generateFakeTransactionWithProducts } from "@infra/models/dynamodb/transactions.model.fake";
 import { DynamodbRepository } from "./dynamodb.repository";
 
@@ -91,6 +92,17 @@ describe("DynamoDB repository Unit Tests", () => {
         throw new Error();
       });
       await expect(repository.getByAccountId("")).rejects.toThrow();
+    });
+  });
+
+  describe("createAccountTransaction method", () => {
+    it("should create transaction value", async () => {
+      const transaction = generateFakeTransactionValue();
+      sendMock.mockImplementationOnce((command: QueryCommand) => {
+        expect(command.input).toBeDefined();
+      });
+      const response = await repository.createAccountTransaction(transaction);
+      expect(response).toBeInstanceOf(TransactionValue);
     });
   });
 });

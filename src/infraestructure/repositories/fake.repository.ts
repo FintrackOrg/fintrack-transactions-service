@@ -16,4 +16,9 @@ export class FakeRepository implements TransactionRepository {
     if (accountId === "error") throw new Error();
     return Promise.resolve(this.transactions[0]);
   }
+
+  createAccountTransaction(transaction: TransactionValue): Promise<TransactionValue> {
+    if (transaction.id === "error") throw new Error();
+    return Promise.resolve(transaction);
+  }
 }

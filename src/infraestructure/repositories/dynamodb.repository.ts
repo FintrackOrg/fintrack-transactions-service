@@ -1,4 +1,4 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { BatchWriteItemCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { EnvVarsConfig } from "@config/env-vars.config";
 import { Logger } from "@config/logger.config";
@@ -67,6 +67,20 @@ export class DynamodbRepository implements TransactionRepository {
       return TransactionDDBMapper.fromDDBAccountToTransactionValue(result.Items);
     } catch (error) {
       this.logger.error({ accountId, error }, "On getByAccountId");
+      throw error;
+    }
+  }
+
+  async createAccountTransaction(transaction: TransactionValue): Promise<TransactionValue> {
+    try {
+      const items = TransactionDDBMapper.fromValueToDDBWriteRequest(transaction);
+
+      const query = new BatchWriteItemCommand({ RequestItems: { [this.TABLE_NAME]: items } });
+      await this.ddbDocumentClient.send(query);
+      this.logger.info(`Created ${items.length} transactions registers`);
+      return transaction;
+    } catch (error) {
+      this.logger.error({ error, transaction }, "On creating account transaction");
       throw error;
     }
   }
