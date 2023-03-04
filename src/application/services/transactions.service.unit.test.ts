@@ -40,4 +40,16 @@ describe("Transactions Service Unit Test", () => {
       await expect(service.getTransactionDetails("error", "")).rejects.toThrow();
     });
   });
+
+  describe("createAccountTransaction method", () => {
+    it("should create account transaction", async () => {
+      const transaction = generateFakeTransactionValue();
+      const response = await service.createAccountTransaction(transaction);
+      expect(response).toBe(transaction);
+    });
+
+    it("should expect an error to be thrown when the repository fails", async () => {
+      await expect(service.createAccountTransaction({ id: "error" } as TransactionValue)).rejects.toThrow();
+    });
+  });
 });

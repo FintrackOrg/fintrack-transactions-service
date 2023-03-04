@@ -6,16 +6,18 @@ const LENGTH_DEFAULT = 5;
 const MAX_DETAILS = 20;
 
 export const generateFakeTransactionValue = (): TransactionValue =>
-  new TransactionValue({
-    accountId: faker.datatype.uuid(),
-    date: faker.datatype.string(),
-    details: generateFakeTransactionDetailArray(faker.datatype.number(MAX_DETAILS)),
-    id: faker.datatype.uuid(),
-    paymentMethod: faker.helpers.arrayElement([PaymentMethods.CASH, PaymentMethods.CREDIT, PaymentMethods.DEBIT]),
-    source: faker.company.name(),
-    userId: faker.datatype.uuid(),
-    value: faker.datatype.number(),
-  });
+  new TransactionValue(
+    {
+      accountId: faker.datatype.uuid(),
+      date: faker.datatype.string(),
+      details: generateFakeTransactionDetailArray(faker.datatype.number(MAX_DETAILS)),
+      paymentMethod: faker.helpers.arrayElement([PaymentMethods.CASH, PaymentMethods.CREDIT, PaymentMethods.DEBIT]),
+      source: faker.company.name(),
+      userId: faker.datatype.uuid(),
+      value: faker.datatype.number(),
+    },
+    faker.datatype.uuid(),
+  );
 
 export const generateFakeTransactionDetail = (): TransactionDetailEntity => ({
   brand: faker.company.name(),
@@ -28,6 +30,7 @@ export const generateFakeTransactionDetail = (): TransactionDetailEntity => ({
   ]),
   id: faker.datatype.uuid(),
   name: faker.commerce.productName(),
+  productId: faker.datatype.uuid(),
   quantity: faker.datatype.number(),
   total: faker.datatype.number(),
   unitValue: faker.datatype.number(),

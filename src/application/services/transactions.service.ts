@@ -31,4 +31,14 @@ export class TransactionsService implements ITransactionsService {
       throw error;
     }
   }
+
+  async createAccountTransaction(transactionValue: TransactionValue): Promise<TransactionValue> {
+    try {
+      const transaction = await this.repository.createAccountTransaction(transactionValue);
+      return transaction;
+    } catch (error) {
+      this.logger.error({ error }, "Unexpected error when trying to create a transaction");
+      throw error;
+    }
+  }
 }

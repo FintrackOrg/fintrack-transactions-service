@@ -3,6 +3,8 @@ import { TransactionProtoMapper } from "@infra/mappers/proto/transactions.proto.
 import {
   GetTransactionsByAccountRequest,
   GetTransactionsByAccountResponse,
+  CreateAccountTransactionRequest,
+  CreateAccountTransactionResponse,
 } from "@fintrack-grpc/proto/transaction/v1/api_pb";
 import { Logger } from "@config/logger.config";
 import { ITransactionsService } from "@app/types/transactions.service.type";
@@ -17,6 +19,24 @@ export class TransactionsController {
     const service = this.transactionsService;
     const logger = this.logger;
     return {
+      async createAccountTransaction(
+        call: ServerUnaryCall<CreateAccountTransactionRequest, CreateAccountTransactionResponse>,
+        callback: sendUnaryData<CreateAccountTransactionResponse>,
+      ): Promise<void> {
+        try {
+          const protoTransaction = call.request.getTransaction();
+          if (!protoTransaction) {
+            return callback(new Error("left transaction"));
+          }
+          const transaction = TransactionProtoMapper.toTransactionValue(protoTransaction);
+          const response = await service.createAccountTransaction(transaction);
+          callback(null, TransactionProtoMapper.toCreateAccountTransactionResponse(response));
+        } catch (error) {
+          console.log("errror", error);
+          logger.error({ error }, "Unexpected error on createAccountTransaction endpoint");
+          callback(new Error("Unexpected error on createAccountTransaction endpoint "));
+        }
+      },
       async getTransactionsByAccount(
         call: ServerUnaryCall<GetTransactionsByAccountRequest, GetTransactionsByAccountResponse>,
         callback: sendUnaryData<GetTransactionsByAccountResponse>,
